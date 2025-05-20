@@ -16,17 +16,18 @@ engine = create_engine(cadena_base_datos)
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# OBTENCION DE DATOS - CLUB
+# OBTENCIÓN DE DATOS - CLUB
 clubs = [] # Lista para almacenar los objetos de tipo Club
 with open('data/datos_clubs.txt', 'r', encoding='utf-8') as data_clubs:
     for c in data_clubs:
         row_clubs = c.strip().split(';') # Lectura de las lineas, seprandolas por ;
         # Crear un objeto de tipo Club
         # Pasarle los parametros obtenidos
-        # como todos los datos son cadenas, la fundacion la transformamos a entero
+        # como todos los datos son cadenas, la fundación la transformamos a entero
         club = Club(nombre=row_clubs[0],deporte=row_clubs[1],fundacion=int(row_clubs[2]))
         print(club)
         clubs.append(club)
+        # Se agregan los objetos de tipo Club a la sesión
         session.add(club)
 
 club1 = "" # Barcelona
@@ -53,6 +54,17 @@ with open('data/datos_jugadores.txt', 'r', encoding='utf-8') as data_jugadores:
         # y para añadirlos a la base de datos necesitamos el club como objeto
         # Pasarle los parametros obtenidos
         # como todos los datos son cadenas, el dorsal la transformamos a entero
-        jugador = Jugador(nombre=row_jugadores[3],dorsal=int(row_jugadores[2]),posicion=row_jugadores[1])
+        if row_jugadores[0] == "Barcelona":
+            jugador = Jugador(nombre=row_jugadores[3],dorsal=int(row_jugadores[2]),posicion=row_jugadores[1], club=club1)
+        elif row_jugadores[0] == "Independiente del Valle":
+            jugador = Jugador(nombre=row_jugadores[3],dorsal=int(row_jugadores[2]),posicion=row_jugadores[1], club=club2)
+        elif row_jugadores[0] == "Mushuc Runa":
+            jugador = Jugador(nombre=row_jugadores[3],dorsal=int(row_jugadores[2]),posicion=row_jugadores[1], club=club3)
+        elif row_jugadores[0] == "Universidad Católica":
+            jugador = Jugador(nombre=row_jugadores[3],dorsal=int(row_jugadores[2]),posicion=row_jugadores[1], club=club4)
         print(jugador)
+        # Se agregan los objetos de tipo Jugadores a la sesión
         session.add(jugador)
+
+# Confirmamos las transacciones
+session.commit()
